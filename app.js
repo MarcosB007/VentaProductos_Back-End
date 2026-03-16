@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 //import router from './routes/admin.js';
 import routerAdmin from './routes/admin.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
@@ -23,8 +24,6 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 240,
 };
-
-const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

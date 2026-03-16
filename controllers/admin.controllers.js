@@ -4,7 +4,9 @@ import { db } from '../dababase/db.js'
 const createUsuario = async (req, res) => {
     try {
 
-        const { nombre, apellido, email, rol } = req.body;
+        const { nombre, apellido, email } = req.body;
+
+        const rol = "usuario"
 
         const query = 'INSERT INTO usuario (nombre, apellido, email, rol) VALUES (?, ?, ?, ?)';
 
@@ -15,7 +17,13 @@ const createUsuario = async (req, res) => {
             msg: "Usuario creado correctamente",
         })
     } catch (error) {
-        console.log(error);
+
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({
+                msg: "El email ya existe"
+            });
+        }
+
         res.status(500).json({
             msg: "Error en el servidor"
         });
@@ -41,6 +49,10 @@ const createProducto = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+
+        // Eliminamos la imagen de cloudinary si no pudo crearse el producto
+        await cloudinary.uploader.destroy(public_id);
+
         res.status(500).json({
             msg: 'Error en el servidor'
         })
