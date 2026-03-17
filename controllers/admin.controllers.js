@@ -1,16 +1,20 @@
 import e from 'express';
 import { db } from '../dababase/db.js'
+import { v2 as cloudinary } from 'cloudinary';
 
 const createUsuario = async (req, res) => {
     try {
 
-        const { nombre, apellido, email } = req.body;
+        const { nombre, apellido, email, username, password } = req.body;
 
         const rol = "usuario"
 
-        const query = 'INSERT INTO usuario (nombre, apellido, email, rol) VALUES (?, ?, ?, ?)';
+        const salt = bcrypt.genSaltSync(10);
+        password = bcrypt.hashSync(password, salt);
 
-        const [result] = await db.execute(query, [nombre, apellido, email, rol]);
+        const query = 'INSERT INTO usuario (nombre, apellido, email, rol, user, password) VALUES (?, ?, ?, ?, ?, ?)';
+
+        const [result] = await db.execute(query, [nombre, apellido, email, rol, username, password]);
 
         res.status(201).json({
             ok: true,
