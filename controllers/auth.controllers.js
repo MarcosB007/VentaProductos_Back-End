@@ -71,7 +71,7 @@ export const login = async (req, res) => {
             id: userFound.id,
             rol: userFound.rol
         })
-        
+
         res.cookie("token", token, {
             httpOnly: true
         });
@@ -89,5 +89,46 @@ export const login = async (req, res) => {
         res.status(500).json({
             msg: "Error interno del servidor"
         })
+    }
+}
+
+export const verifyToken = async (req, res) => {
+
+    try {
+
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            return res.status(401).json({
+                msg: "No token provided"
+            });
+        }
+        const token = authHeader.split(" ")[1];
+
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+        const query = "SELECT * FROM usuario WHERE id=?"
+
+        const [rows] = await db.execute(query, [decoded.id]);
+        
+        if (rows.length === 0) {
+            return res.status(401).json({
+                msg: "Usuario no autorizado"
+            });
+        }
+
+        const user = rows[0];
+
+        res.status(200).json({
+            id: user.id,
+            username: user.user,
+            email: user.email,
+            rol: user.rol
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            msg: "Token inválido"
+        });
     }
 }
