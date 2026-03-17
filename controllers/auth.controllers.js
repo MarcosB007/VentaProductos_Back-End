@@ -54,22 +54,24 @@ export const login = async (req, res) => {
         const [rows] = await db.execute(query, [email]);
 
         if (rows.length === 0) {
-            return res.json({
-                msg: "Usuario no encontrado"
+            return res.status(400).json({
+                msg: "El email o la contraseña son incorrectos"
             })
         }
 
         const userFound = rows[0];
 
-        //AGREGAR LA VALIDACION DE LA CONTRASEÑA
-
         const isMatch = await bcrypt.compare(password, userFound.password)
 
-        if(!isMatch) return res.status(400).json({
+        if (!isMatch) return res.status(400).json({
             msg: "El email o la contraseña son incorrectos"
         })
 
-        const token = await createAccessToken({ id: userFound.id })
+        const token = await createAccessToken({
+            id: userFound.id,
+            rol: userFound.rol
+        })
+        
         res.cookie("token", token, {
             httpOnly: true
         });
@@ -78,7 +80,8 @@ export const login = async (req, res) => {
             id: userFound.id,
             username: userFound.nombre,
             email: userFound.email,
-            rol: userFound.rol
+            rol: userFound.rol,
+            token
         });
 
     } catch (error) {
