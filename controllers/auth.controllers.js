@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
-import { db } from '../dababase/db.js'
+import { db } from '../dababase/db.js';
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -105,7 +106,7 @@ export const verifyToken = async (req, res) => {
         }
         const token = authHeader.split(" ")[1];
 
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
 
         const query = "SELECT * FROM usuario WHERE id=?"
 
@@ -121,7 +122,7 @@ export const verifyToken = async (req, res) => {
 
         res.status(200).json({
             id: user.id,
-            username: user.user,
+            username: user.nombre,
             email: user.email,
             rol: user.rol
         });
