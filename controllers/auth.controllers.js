@@ -47,9 +47,9 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(email, password);
     try {
-
+        
         const query = "SELECT * FROM usuario WHERE email=?"
 
         const [rows] = await db.execute(query, [email]);
@@ -73,16 +73,16 @@ export const login = async (req, res) => {
             rol: userFound.rol
         })
 
-        res.cookie("token", token, {
-            httpOnly: true
-        });
+        console.log("TOKEN GENERADO:", token);
+
+        res.cookie("token", token);
 
         res.status(200).json({
             id: userFound.id,
             username: userFound.nombre,
             email: userFound.email,
             rol: userFound.rol,
-            token
+            token: token
         });
 
     } catch (error) {

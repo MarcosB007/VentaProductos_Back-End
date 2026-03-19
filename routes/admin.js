@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createProducto, createUsuario, deleteProductoById, getProductos, getUsuario } from "../controllers/admin.controllers.js";
-import { login, register } from "../controllers/auth.controllers.js";
+import { login, register, verifyToken } from "../controllers/auth.controllers.js";
 
 
 const routerAdmin = Router();
@@ -14,5 +14,6 @@ routerAdmin.delete('/deleteProductoById/:id', deleteProductoById);
 
 routerAdmin.post('/login', login);
 routerAdmin.post('/register', register);
+routerAdmin.get('/verify', verifyToken);
 
 export default routerAdmin;
