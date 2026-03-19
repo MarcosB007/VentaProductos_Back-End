@@ -47,7 +47,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password);
+    //console.log(email, password);
     try {
         
         const query = "SELECT * FROM usuario WHERE email=?"
@@ -73,7 +73,7 @@ export const login = async (req, res) => {
             rol: userFound.rol
         })
 
-        console.log("TOKEN GENERADO:", token);
+        //console.log("TOKEN GENERADO:", token);
 
         res.cookie("token", token);
 
@@ -91,6 +91,13 @@ export const login = async (req, res) => {
             msg: "Error interno del servidor"
         })
     }
+}
+
+export const logout = (req, res) => {
+    res.cookie("token", "", {
+        expires: new Date(0)
+    })
+    return res.sendStatus(200);
 }
 
 export const verifyToken = async (req, res) => {

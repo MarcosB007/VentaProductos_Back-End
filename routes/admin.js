@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createProducto, createUsuario, deleteProductoById, getProductos, getUsuario } from "../controllers/admin.controllers.js";
-import { login, register, verifyToken } from "../controllers/auth.controllers.js";
+import { login, logout, register, verifyToken } from "../controllers/auth.controllers.js";
 
 
 const routerAdmin = Router();
@@ -13,6 +13,7 @@ routerAdmin.get('/productos', getProductos);
 routerAdmin.delete('/deleteProductoById/:id', deleteProductoById);
 
 routerAdmin.post('/login', login);
+routerAdmin.post('/logout', logout);
 routerAdmin.post('/register', register);
 routerAdmin.get('/verify', verifyToken);
 
