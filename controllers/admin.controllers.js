@@ -37,14 +37,14 @@ const createUsuario = async (req, res) => {
 const createProducto = async (req, res) => {
     try {
 
-        const { nombre, descripcion, stock, precio_lista, url_imagen, public_id } = req.body;
+        const { nombre, descripcion, stock, precio_lista, url_imagen, public_id, id_categoria } = req.body;
 
         const query = `
-        INSERT INTO producto (nombre, descripcion, stock, precio_lista, url_imagen, public_id)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO producto (nombre, descripcion, stock, precio_lista, url_imagen, public_id, id_categoria)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
-        await db.execute(query, [nombre, descripcion, stock, precio_lista, url_imagen, public_id]);
+        await db.execute(query, [nombre, descripcion, stock, precio_lista, url_imagen, public_id, id_categoria]);
 
         res.status(201).json({
             ok: true,
@@ -81,6 +81,34 @@ const getProductos = async (req, res) => {
 
     } catch (error) {
         console.log('Error al obtener los productos: ', error);
+        res.status(500).json({
+            msg: 'Error en el servidor'
+        })
+    }
+}
+
+const getProductosById = async (req, res) => {
+    try {
+
+        const [rows] = await db.query('SELECT * FROM producto WHERE id = ?', [req.params.id]);
+        res.json(rows);
+
+    } catch (error) {
+        console.log('Error al obtener los productos: ', error);
+        res.status(500).json({
+            msg: 'Error en el servidor'
+        })
+    }
+}
+
+const getCategorias = async (req, res) => {
+    try {
+
+        const [rows] = await db.query('SELECT * FROM categoria');
+        res.json(rows);
+
+    } catch (error) {
+        console.log('Error al obtener las categorias: ', error);
         res.status(500).json({
             msg: 'Error en el servidor'
         })
@@ -127,5 +155,7 @@ export {
     createUsuario,
     createProducto,
     getProductos,
-    deleteProductoById
+    deleteProductoById, 
+    getCategorias,
+    getProductosById
 }
