@@ -151,13 +151,13 @@ const deleteProductoById = async (req, res) => {
 };
 
 //Agregamos productos al carrito de compras
-export const agregarAlCarrito = async (req, res) => {
+const agregarAlCarrito = async (req, res) => {
     try {
         
-        const { id_carrito, id_producto, cantidad, precio_unitario } = req.body;
+        const { carrito_id, producto_id, cantidad, precio_unitario } = req.body;
         const query = "INSERT INTO carrito_detalle (carrito_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
 
-        await db.execute(query, [id_carrito, id_producto, cantidad, precio_unitario]);
+        await db.execute(query, [carrito_id, producto_id, cantidad, precio_unitario]);
 
         res.status(201).json({
             ok: true,
@@ -172,6 +172,31 @@ export const agregarAlCarrito = async (req, res) => {
     }
 }
 
+const searchCarrito = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("ID USUARIO:", id);
+
+        const query = "SELECT * FROM carrito WHERE usuario_id = ? AND estado = 'activo'";
+        const [rows] = await db.execute(query, [id]);
+
+        const carrito = rows[0];
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                msg: "Carrito no encontrado"
+            });
+        }
+        return res.json(carrito);
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: "Error en el servidor"
+        });
+    }
+}
+
 export {
     getUsuario,
     createUsuario,
@@ -179,5 +204,7 @@ export {
     getProductos,
     deleteProductoById, 
     getCategorias,
-    getProductosById
+    getProductosById,
+    agregarAlCarrito,
+    searchCarrito
 }

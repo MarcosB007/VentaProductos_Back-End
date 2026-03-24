@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProducto, createUsuario, deleteProductoById, getCategorias, getProductos, getProductosById, getUsuario } from "../controllers/admin.controllers.js";
+import { agregarAlCarrito, createProducto, createUsuario, deleteProductoById, getCategorias, getProductos, getProductosById, getUsuario, searchCarrito } from "../controllers/admin.controllers.js";
 import { login, logout, register, verifyToken } from "../controllers/auth.controllers.js";
 
 
@@ -19,5 +19,7 @@ routerAdmin.get('/verify', verifyToken);
 
 routerAdmin.get('/getCategorias', getCategorias);
 routerAdmin.get('/getProductosByIdCategoria/:id', getProductosById);
+routerAdmin.post('/agregarAlCarrito', agregarAlCarrito);
+routerAdmin.get('/buscarCarrito/:id', searchCarrito);
 
 export default routerAdmin;
