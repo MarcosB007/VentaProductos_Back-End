@@ -222,6 +222,27 @@ const getProductosCarrito = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA QUITAR UN PRODUCTO DEL CARRITO
+const quitarDelCarrito = async (req, res) => {
+    try {
+        const { carrito_id, producto_id } = req.params;
+        console.log("Carrito ID:", carrito_id);
+        console.log("Producto ID:", producto_id);
+        const query = "DELETE FROM carrito_detalle WHERE carrito_id = ? AND producto_id = ?";
+        await db.execute(query, [carrito_id, producto_id]);
+
+        res.status(200).json({
+            ok: true,
+            msg: "Producto eliminado del carrito"
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: "Error en el servidor"
+        });
+    }
+}
+
 export {
     getUsuario,
     createUsuario,
@@ -232,5 +253,6 @@ export {
     getProductosById,
     agregarAlCarrito,
     searchCarrito,
-    getProductosCarrito
+    getProductosCarrito,
+    quitarDelCarrito
 }
