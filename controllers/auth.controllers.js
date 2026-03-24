@@ -25,6 +25,12 @@ export const register = async (req, res) => {
         const queryInsert = "INSERT INTO usuario (nombre, apellido, email, rol, username, password) VALUES (?, ?, ?, ?, ?, ?)"
         const [result] = await db.execute(queryInsert, [nombre, apellido, email, rol, username, passwordHash]);
         const token = await createAccessToken({ id: result.insertId, role: rol })
+
+        //Creamos el carrito para el usuario registrado
+        const estadoCarrito = "activo";
+
+        await db.execute("INSERT INTO carrito (usuario_id, estado) VALUES (?, ?)", [result.insertId, estadoCarrito]);
+
         res.cookie("token", token, {
             httpOnly: true
         });

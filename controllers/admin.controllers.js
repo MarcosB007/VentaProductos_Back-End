@@ -150,6 +150,28 @@ const deleteProductoById = async (req, res) => {
     }
 };
 
+//Agregamos productos al carrito de compras
+export const agregarAlCarrito = async (req, res) => {
+    try {
+        
+        const { id_carrito, id_producto, cantidad, precio_unitario } = req.body;
+        const query = "INSERT INTO carrito_detalle (carrito_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
+
+        await db.execute(query, [id_carrito, id_producto, cantidad, precio_unitario]);
+
+        res.status(201).json({
+            ok: true,
+            msg: "Producto agregado al carrito"
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: "Error en el servidor"
+        })
+    }
+}
+
 export {
     getUsuario,
     createUsuario,
