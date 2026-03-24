@@ -34,6 +34,7 @@ const createUsuario = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA CREAR PRODUCTOS 
 const createProducto = async (req, res) => {
     try {
 
@@ -63,6 +64,7 @@ const createProducto = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA OBTENER LOS USUARIOS
 const getUsuario = async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM usuario');
@@ -73,6 +75,7 @@ const getUsuario = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA OBTENER LOS PRODUCTOS
 const getProductos = async (req, res) => {
     try {
 
@@ -87,6 +90,7 @@ const getProductos = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA OBTENER LOS PRODUCTOS POR ID
 const getProductosById = async (req, res) => {
     try {
 
@@ -101,6 +105,7 @@ const getProductosById = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA OBTENER LAS CATEGORIAS
 const getCategorias = async (req, res) => {
     try {
 
@@ -115,6 +120,7 @@ const getCategorias = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA ELIMINAR UN PRODUCTO POR ID
 const deleteProductoById = async (req, res) => {
     try {
 
@@ -150,10 +156,10 @@ const deleteProductoById = async (req, res) => {
     }
 };
 
-//Agregamos productos al carrito de compras
+//ENDPOINT PARA AGREGAR PRODUCTOS AL CARRITO
 const agregarAlCarrito = async (req, res) => {
     try {
-        
+
         const { carrito_id, producto_id, cantidad, precio_unitario } = req.body;
         const query = "INSERT INTO carrito_detalle (carrito_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
 
@@ -172,6 +178,7 @@ const agregarAlCarrito = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA BUSCAR EL CARRITO ACTIVO DE UN USUARIO
 const searchCarrito = async (req, res) => {
     try {
         const { id } = req.params;
@@ -188,7 +195,7 @@ const searchCarrito = async (req, res) => {
             });
         }
         return res.json(carrito);
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -197,14 +204,33 @@ const searchCarrito = async (req, res) => {
     }
 }
 
+// ENDPOINT PARA OBTENER LOS PRODUCTOS DE UN CARRITO
+const getProductosCarrito = async (req, res) => {
+    try {
+        const { id } = req.params; 
+
+        // SOLO TRAEMOS EL ID DE LOS PRODUCTOS
+        const query = "SELECT producto_id FROM carrito_Detalle WHERE carrito_id = ?";
+        const [rows] = await db.execute(query, [id]);
+
+        //RETORNAMOS EL ARRAY DE LOS ID DE LOS PRODUCTOS
+        res.json(rows);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+}
+
 export {
     getUsuario,
     createUsuario,
     createProducto,
     getProductos,
-    deleteProductoById, 
+    deleteProductoById,
     getCategorias,
     getProductosById,
     agregarAlCarrito,
-    searchCarrito
+    searchCarrito,
+    getProductosCarrito
 }
